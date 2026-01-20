@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 
         case 'o':
             if (optarg != NULL) {
-                PrintHelp(argv[0]);
+                printf("[!] Arguments and values must have a space as a delimiter\n\n");
                 return 1;
             }
 
@@ -55,14 +55,11 @@ int main(int argc, char* argv[]) {
             }
 
             break;
-
-        default:
-            PrintHelp(argv[0]);
         }
     }
 
     // Print help
-    if (szShellcodeFileName == NULL && Method == MethodUnknown && szOutputFileName) {
+    if (szShellcodeFileName == NULL && Method == MethodUnknown && szOutputFileName == NULL) {
         PrintHelp(argv[0]);
         return 1;
     }
@@ -70,8 +67,16 @@ int main(int argc, char* argv[]) {
     // Check missing flags
     if (szShellcodeFileName == NULL || Method == MethodUnknown) {
         PrintHelp(argv[0]);
+        printf("[!] Mandatory arguments are missing\n\n");
         return 1;
     }
+
+    // Check that the Output File option is supported
+    if (szOutputFileName && (Method == MethodIPv4 || Method == MethodIPv6 || Method == MethodMac || Method == MethodUuid || Method == MethodTimestamp)) {
+        printf("[!] Output File option is not supported for obfuscation methods\n\n");
+        return 1;
+    }
+
     
     /*
         Initializing values
